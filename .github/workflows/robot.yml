@@ -11,4 +11,4 @@ jobs:
       - name: checkout 
         uses: actions/checkout@v4
       - name: saludo
-        run: echo "hola mundo!"
+        run: echo " ${{ secrets.DOCKERHUB_TOKEN }} "
