@@ -1,1 +1,74 @@
-<label>hola mundo</label>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Suscripciones API</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; line-height: 1.6; }
+        .config-box { background: #eef2f3; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #d1d8e0; }
+        .api-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; display: none; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+        .method { font-weight: bold; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: white; }
+        .get { background: #61affe; } .post { background: #49cc90; } .put { background: #fca130; } .delete { background: #f93e3e; }
+        input, button { padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+        button { cursor: pointer; background: #2d3436; color: white; border: none; transition: 0.3s; }
+        button:hover { background: #000; }
+        pre { background: #272822; color: #f8f8f2; padding: 15px; overflow-x: auto; border-radius: 5px; max-height: 300px; }
+    </style>
+</head>
+<body>
+
+    <h2>Configuración de Conexión</h2>
+    <div class="config-box">
+        <label>IP de la API (con puerto):</label><br>
+        <input type="text" id="ipInput" placeholder="Ej: 192.168.1.50:8080" style="width: 250px;">
+        <button onclick="saveConfig()">Guardar y Reiniciar</button>
+        <p id="statusMsg">Cargando estado...</p>
+    </div>
+
+    <div id="dashboard" class="api-grid">
+        <div class="card">
+            <span class="method get">GET</span> <strong>Listar Suscripciones</strong>
+            <p><small>/buscarTodos</small></p>
+            <button onclick="callApi('buscarTodos')">Ejecutar</button>
+        </div>
+
+        <div class="card">
+            <span class="method get">GET</span> <strong>Buscar por ID</strong>
+            <input type="number" id="searchId" placeholder="ID">
+            <button onclick="callApi('buscarPorId/' + document.getElementById('searchId').value)">Buscar</button>
+        </div>
+
+        <div class="card">
+            <span class="method get">GET</span> <strong>Por Categoría</strong>
+            <input type="text" id="searchCat" placeholder="Categoría">
+            <button onclick="callApi('buscarPorCategoria/' + document.getElementById('searchCat').value)">Filtrar</button>
+        </div>
+
+        <div class="card">
+            <span class="method post">POST</span> <strong>Crear Nuevo Plan</strong>
+            <p><small>JSON requerido</small></p>
+            <button onclick="callApi('crear', 'POST', {nombre: 'Nuevo Plan', precio: 100})">Crear Demo</button>
+        </div>
+
+        <div class="card">
+            <span class="method get">GET</span> <strong>Toggle Activo/Inactivo</strong>
+            <input type="number" id="toggleId" placeholder="ID">
+            <button onclick="callApi('suscripcion/' + document.getElementById('toggleId').value + '/activo')">Cambiar</button>
+        </div>
+
+        <div class="card">
+            <span class="method delete">DELETE</span> <strong>Eliminar Inactivo</strong>
+            <input type="number" id="deleteId" placeholder="ID">
+            <button onclick="callApi('suscripcion/eliminar/' + document.getElementById('deleteId').value, 'DELETE')">Eliminar</button>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Consola de Respuesta:</h3>
+    <pre id="responseLog">Esperando acción...</pre>
+
+    <script src="index.js"></script>
+</body>
+</html>
