@@ -2,7 +2,7 @@ name: mi primer robot
 
 on:
   push:
-    branches: [main]
+    branches: [delete]
 
 jobs:
   checkout:
