@@ -1,47 +1,23 @@
 const BASE_PATH = "/api/v1/";
 
-window.onload = function() {
-    const savedIP = localStorage.getItem('server_ip');
-    const statusMsg = document.getElementById('statusMsg');
-    const dashboard = document.getElementById('dashboard');
-
-    if (savedIP) {
-        statusMsg.innerHTML = `✅ Conectado a: <strong>http://${savedIP}${BASE_PATH}</strong>`;
-        statusMsg.style.color = "#27ae60";
-        dashboard.style.display = "grid"; // Mostrar botones
-    } else {
-        statusMsg.innerHTML = "❌ IP no configurada. Por favor, ingresa una para continuar.";
-        statusMsg.style.color = "#e74c3c";
-    }
-};
-
-function saveConfig() {
-    const ip = document.getElementById('ipInput').value.trim();
-    if (ip) {
-        localStorage.setItem('server_ip', ip);
-        window.location.reload(); // Reinicia para aplicar cambios
-    }
-}
 
 async function callApi(endpoint, method = 'GET', body = null) {
-    const ip = localStorage.getItem('server_ip');
-    const log = document.getElementById('responseLog');
-    const url = `http://${ip}${BASE_PATH}${endpoint}`;
+    const consoleBox = document.getElementById('console');
+    
+    // Al no poner IP ni HTTP, el navegador usa la misma IP de donde descargó el HTML
+    const url = `/api/v1/${endpoint}`; 
 
-    log.innerText = `Consultando: ${method} ${url}...`;
-
-    const options = {
-        method: method,
-        headers: { 'Content-Type': 'application/json' }
-    };
-
-    if (body) options.body = JSON.stringify(body);
+    consoleBox.innerText = `>> Enviando petición interna a: ${url}...`;
 
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : null
+        });
         const data = await response.json();
-        log.innerText = JSON.stringify(data, null, 2);
+        consoleBox.innerText = JSON.stringify(data, null, 2);
     } catch (error) {
-        log.innerText = `Error: No se pudo conectar a la API. \nDetalle: ${error.message}`;
+        consoleBox.innerText = `Error: ${error.message}`;
     }
 }
